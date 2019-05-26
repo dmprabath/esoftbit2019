@@ -1,0 +1,7 @@
+/*Own Styles*/
+.login{
+	border: 1px solid #ccc;	
+	border-radius: 8px;
+	top: 150px;
+	box-shadow: 7px 5px 10px #ccc; /*verticle horizentzl spread color  */
+}
