@@ -156,6 +156,7 @@ function updateUsers(){
 	$dbobj->close();
 
 }
+		/*this is for password reset*/
 function resetPassword(){
 	$empid = $_POST["eid"];
 	$uname = $_POST["uname"];
@@ -174,11 +175,41 @@ function resetPassword(){
 	if(!$stmt->execute()){
 		echo("0,SQL Error : ".$stmt->error);
 	}
-	else{
-		echo("1,Successfully Updated!");
+	else{		/* to send email */
+		$to = "newuser@localhost";	/* reciver email*/
+		$sub = "Reset Your Password";  /* subject email*/
+	
+		$name = getFirstName($empid);  /* to get user name*/
+		$msg = "Hello $name,\n\n";
+		$link = "http://localhost/webclass"; /* project folder path*/
+		$msg .= "Your password has been reset by administrator, please use below link to setup a new password.\n ";
+		$msg .="$link\n\n";
+		$msg .="Thank you, \nAdmin team";
+		$headers = "From:<postmaster@localhost>"; /* sender default email you can't change*/
+
+		if(mail($to,$sub,$msg,$headers)){
+			echo("1,Successfully Updated!");
+		}
+		else{
+			echo("0,Mail Error!");
+		}
 	}
 	$stmt->close();
 	$dbobj->close();
 }
 
+			/* this is for get user name for email*/
+function getFirstName($empid){
+	$dbobj = DB::connect();
+	$sql =  "SELECT emp_name FROM tbl_employee WHERE emp_id='$empid';";
+
+	$result = $dbobj->query($sql);
+	if($dbobj->errno){
+		echo("0,SQL Error : ".$dbobj->error);
+		exit;
+	}
+	$rec = $result->fetch_array();
+	$dbobj->close();
+	return $rec[0];
+}
 ?>
